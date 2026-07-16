@@ -3,11 +3,22 @@ import api from "../api/client.js";
 
 const AuthContext = createContext(null);
 
+// Read the cached user from localStorage, tolerating missing or corrupt values
+// (e.g. the literal string "undefined" left by a bad earlier write) so a stale
+// entry can never crash the whole app on load.
+function readStoredUser() {
+  const raw = localStorage.getItem("user");
+  if (!raw || raw === "undefined" || raw === "null") return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    localStorage.removeItem("user");
+    return null;
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const raw = localStorage.getItem("user");
-    return raw ? JSON.parse(raw) : null;
-  });
+  const [user, setUser] = useState(readStoredUser);
   const [loading, setLoading] = useState(false);
 
   // Refresh the profile on mount if a token exists (keeps role in sync).
