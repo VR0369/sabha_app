@@ -78,16 +78,18 @@ class AttendeePublic(AttendeeBase):
 
 
 # ---------- Events ----------
+class Speaker(BaseModel):
+    name: str | None = Field(default=None, max_length=120)
+    topic: str | None = Field(default=None, max_length=200)
+
+
 class EventBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=160)
     date: dt.date
     location: str | None = Field(default=None, max_length=160)
     theme: str | None = Field(default=None, max_length=200)
     host: str | None = Field(default=None, max_length=120)
-    speaker1: str | None = Field(default=None, max_length=120)
-    speaker1_topic: str | None = Field(default=None, max_length=200)
-    speaker2: str | None = Field(default=None, max_length=120)
-    speaker2_topic: str | None = Field(default=None, max_length=200)
+    speakers: list[Speaker] = Field(default_factory=list, max_length=5)
     activity: str | None = Field(default=None, max_length=300)
     notes: str | None = Field(default=None, max_length=1000)
 
@@ -102,10 +104,7 @@ class EventUpdate(BaseModel):
     location: str | None = Field(default=None, max_length=160)
     theme: str | None = Field(default=None, max_length=200)
     host: str | None = Field(default=None, max_length=120)
-    speaker1: str | None = Field(default=None, max_length=120)
-    speaker1_topic: str | None = Field(default=None, max_length=200)
-    speaker2: str | None = Field(default=None, max_length=120)
-    speaker2_topic: str | None = Field(default=None, max_length=200)
+    speakers: list[Speaker] | None = Field(default=None, max_length=5)
     activity: str | None = Field(default=None, max_length=300)
     notes: str | None = Field(default=None, max_length=1000)
 
