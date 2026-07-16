@@ -52,7 +52,7 @@ services:
   # Frontend — React + Vite, built to static files on a CDN            #
   # ------------------------------------------------------------------ #
   - type: web
-    name: sabha-attendance-web
+    name: sabha-seva-web
     runtime: static
     branch: main          # deploy from this branch
     autoDeploy: true       # rebuild automatically on every push to `branch`
