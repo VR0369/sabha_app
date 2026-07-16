@@ -3,15 +3,45 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/client.js";
 import Modal from "../components/Modal.jsx";
 
-function nextSunday() {
+// Local date -> YYYY-MM-DD (avoids the UTC shift of toISOString()).
+function toISODate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+// The upcoming Friday (today if today is already Friday).
+function upcomingFriday() {
   const d = new Date();
-  d.setDate(d.getDate() + ((7 - d.getDay()) % 7));
-  return d.toISOString().slice(0, 10);
+  d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7));
+  return toISODate(d);
+}
+
+// The first Friday strictly after the given YYYY-MM-DD (a Friday -> +7 days).
+function fridayAfter(isoDate) {
+  const d = new Date(`${isoDate}T00:00:00`);
+  do {
+    d.setDate(d.getDate() + 1);
+  } while (d.getDay() !== 5);
+  return toISODate(d);
+}
+
+// Default date for a new event: the upcoming Friday, or the Friday after the
+// most recent existing event — whichever is later (so never a past date).
+function defaultEventDate(events) {
+  let date = upcomingFriday();
+  if (events && events.length) {
+    const latest = events.reduce((max, e) => (e.date > max ? e.date : max), events[0].date);
+    const afterLatest = fridayAfter(latest);
+    if (afterLatest > date) date = afterLatest;
+  }
+  return date;
 }
 
 const EMPTY = {
   title: "Weekly Sabha",
-  date: nextSunday(),
+  date: upcomingFriday(),
   location: "",
   theme: "",
   host: "",
@@ -47,7 +77,7 @@ export default function Events() {
 
   function openCreate() {
     setEditing(null);
-    setForm({ ...EMPTY, date: nextSunday(), speakers: [] });
+    setForm({ ...EMPTY, date: defaultEventDate(events), speakers: [] });
     setHasSpeaker(false);
     setHasActivity(false);
     setModalOpen(true);
