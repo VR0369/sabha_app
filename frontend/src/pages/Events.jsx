@@ -9,7 +9,19 @@ function nextSunday() {
   return d.toISOString().slice(0, 10);
 }
 
-const EMPTY = { title: "Weekly Sabha", date: nextSunday(), location: "", notes: "" };
+const EMPTY = {
+  title: "Weekly Sabha",
+  date: nextSunday(),
+  location: "",
+  theme: "",
+  host: "",
+  speaker1: "",
+  speaker1_topic: "",
+  speaker2: "",
+  speaker2_topic: "",
+  activity: "",
+  notes: "",
+};
 
 export default function Events() {
   const [events, setEvents] = useState([]);
@@ -42,7 +54,19 @@ export default function Events() {
 
   function openEdit(ev) {
     setEditing(ev);
-    setForm({ title: ev.title, date: ev.date, location: ev.location || "", notes: ev.notes || "" });
+    setForm({
+      title: ev.title,
+      date: ev.date,
+      location: ev.location || "",
+      theme: ev.theme || "",
+      host: ev.host || "",
+      speaker1: ev.speaker1 || "",
+      speaker1_topic: ev.speaker1_topic || "",
+      speaker2: ev.speaker2 || "",
+      speaker2_topic: ev.speaker2_topic || "",
+      activity: ev.activity || "",
+      notes: ev.notes || "",
+    });
     setModalOpen(true);
   }
 
@@ -97,6 +121,25 @@ export default function Events() {
                   <span className="badge bg-brand-50 text-brand-700">{rate}%</span>
                 </div>
                 {ev.location && <div className="mt-1 text-sm text-slate-500">📍 {ev.location}</div>}
+                {(ev.theme || ev.host || ev.speaker1 || ev.speaker2 || ev.activity) && (
+                  <div className="mt-2 space-y-0.5 text-sm text-slate-500">
+                    {ev.theme && (
+                      <div>🎯 <span className="font-medium text-slate-600">Theme:</span> {ev.theme}</div>
+                    )}
+                    {ev.host && (
+                      <div>🎤 <span className="font-medium text-slate-600">Host:</span> {ev.host}</div>
+                    )}
+                    {ev.speaker1 && (
+                      <div>🗣️ {ev.speaker1}{ev.speaker1_topic && <span className="text-slate-400"> — {ev.speaker1_topic}</span>}</div>
+                    )}
+                    {ev.speaker2 && (
+                      <div>🗣️ {ev.speaker2}{ev.speaker2_topic && <span className="text-slate-400"> — {ev.speaker2_topic}</span>}</div>
+                    )}
+                    {ev.activity && (
+                      <div>🎬 <span className="font-medium text-slate-600">Activity:</span> {ev.activity}</div>
+                    )}
+                  </div>
+                )}
                 <div className="mt-3 flex gap-4 text-sm">
                   <span className="text-emerald-600">● {ev.present_count} present</span>
                   <span className="text-red-500">● {ev.absent_count} absent</span>
@@ -145,6 +188,38 @@ export default function Events() {
           <div>
             <label className="label">Location</label>
             <input className="input" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
+          </div>
+          <div>
+            <label className="label">Theme</label>
+            <input className="input" value={form.theme} onChange={(e) => setForm({ ...form, theme: e.target.value })} />
+          </div>
+          <div>
+            <label className="label">Host</label>
+            <input className="input" value={form.host} onChange={(e) => setForm({ ...form, host: e.target.value })} />
+          </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <label className="label">Speaker 1</label>
+              <input className="input" value={form.speaker1} onChange={(e) => setForm({ ...form, speaker1: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">Topic</label>
+              <input className="input" value={form.speaker1_topic} onChange={(e) => setForm({ ...form, speaker1_topic: e.target.value })} />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <label className="label">Speaker 2</label>
+              <input className="input" value={form.speaker2} onChange={(e) => setForm({ ...form, speaker2: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">Topic</label>
+              <input className="input" value={form.speaker2_topic} onChange={(e) => setForm({ ...form, speaker2_topic: e.target.value })} />
+            </div>
+          </div>
+          <div>
+            <label className="label">Activity</label>
+            <input className="input" value={form.activity} onChange={(e) => setForm({ ...form, activity: e.target.value })} />
           </div>
           <div>
             <label className="label">Notes</label>

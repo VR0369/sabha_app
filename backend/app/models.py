@@ -82,6 +82,13 @@ class EventBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=160)
     date: dt.date
     location: str | None = Field(default=None, max_length=160)
+    theme: str | None = Field(default=None, max_length=200)
+    host: str | None = Field(default=None, max_length=120)
+    speaker1: str | None = Field(default=None, max_length=120)
+    speaker1_topic: str | None = Field(default=None, max_length=200)
+    speaker2: str | None = Field(default=None, max_length=120)
+    speaker2_topic: str | None = Field(default=None, max_length=200)
+    activity: str | None = Field(default=None, max_length=300)
     notes: str | None = Field(default=None, max_length=1000)
 
 
@@ -93,6 +100,13 @@ class EventUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=160)
     date: dt.date | None = None
     location: str | None = Field(default=None, max_length=160)
+    theme: str | None = Field(default=None, max_length=200)
+    host: str | None = Field(default=None, max_length=120)
+    speaker1: str | None = Field(default=None, max_length=120)
+    speaker1_topic: str | None = Field(default=None, max_length=200)
+    speaker2: str | None = Field(default=None, max_length=120)
+    speaker2_topic: str | None = Field(default=None, max_length=200)
+    activity: str | None = Field(default=None, max_length=300)
     notes: str | None = Field(default=None, max_length=1000)
 
 
