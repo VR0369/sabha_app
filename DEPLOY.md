@@ -124,5 +124,19 @@ admins or **coordinators**.
 - **Custom domain:** each service → **Settings → Custom Domains**. If you add one,
   update `CORS_ORIGINS` (backend) and `VITE_API_BASE` (frontend) to match, and
   redeploy the frontend.
-- **Auto-deploy:** by default Render redeploys on every push to `main`. Remember that
-  frontend env-var changes still require a fresh build to take effect.
+## Auto-deploy on every push
+
+Both services set `autoDeploy: true` and `branch: main` in `render.yaml`, so **after
+you connect the Blueprint once, every `git push` to `main` redeploys automatically** —
+Render's GitHub App does this via webhooks, so you don't need GitHub Actions or any
+extra CI. A push rebuilds the frontend too, so `VITE_API_BASE` is re-baked from the
+current value each time.
+
+- **Verify it's on:** each service → **Settings → Build & Deploy** → *Auto-Deploy* = `Yes`,
+  tracking branch `main`.
+- **Deploy only when tests pass:** change `autoDeploy: true` to
+  `autoDeployTrigger: checksPass` (requires status checks on the repo).
+- **Note:** changing an env var *in the dashboard* (e.g. `VITE_API_BASE`) does **not**
+  trigger an auto-deploy — only a git push (or a manual deploy) does. So after editing a
+  frontend env var, click **Manual Deploy → Deploy latest commit** once.
+- **Pause temporarily:** set `autoDeploy: false`, or use **Settings → Suspend** on the service.

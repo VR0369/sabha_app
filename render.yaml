@@ -17,6 +17,8 @@ services:
     name: sabha-attendance-api
     runtime: python
     plan: free
+    branch: main          # deploy from this branch
+    autoDeploy: true       # redeploy automatically on every push to `branch`
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
@@ -52,6 +54,8 @@ services:
   - type: web
     name: sabha-attendance-web
     runtime: static
+    branch: main          # deploy from this branch
+    autoDeploy: true       # rebuild automatically on every push to `branch`
     rootDir: frontend
     # --include=dev forces devDependencies (Vite/Tailwind) even if Render
     # sets NODE_ENV=production during the build.
