@@ -30,7 +30,7 @@ export default function Login() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-brand-50 to-slate-100 p-4">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
-          <div className="text-4xl">🪔</div>
+          <img src="/logo.png" alt="Sabha logo" className="mx-auto h-20 w-20 object-contain" />
           <h1 className="mt-2 text-2xl font-bold text-slate-800">Sabha Attendance</h1>
           <p className="text-sm text-slate-500">Sign in to manage your weekly event</p>
         </div>

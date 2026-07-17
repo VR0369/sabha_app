@@ -25,7 +25,7 @@ export default function Layout() {
       <div className="mx-auto flex max-w-7xl flex-col md:flex-row">
         <aside className="w-full shrink-0 border-b border-slate-200 bg-white md:min-h-screen md:w-60 md:border-b-0 md:border-r">
           <div className="flex items-center gap-2 px-5 py-5">
-            <span className="text-2xl">🪔</span>
+            <img src="/logo.png" alt="Sabha logo" className="h-9 w-9 object-contain" />
             <div>
               <div className="font-semibold leading-tight">Sabha</div>
               <div className="text-xs text-slate-400">Attendance</div>
