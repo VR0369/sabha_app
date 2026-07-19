@@ -89,6 +89,7 @@ class AttendeePublic(AttendeeBase):
 class Speaker(BaseModel):
     name: str | None = Field(default=None, max_length=120)
     topic: str | None = Field(default=None, max_length=200)
+    takeaway: str | None = Field(default=None, max_length=300)
 
 
 class EventBase(BaseModel):

@@ -85,7 +85,11 @@ export default function Events() {
 
   function openEdit(ev) {
     setEditing(ev);
-    const speakers = (ev.speakers || []).map((s) => ({ name: s.name || "", topic: s.topic || "" }));
+    const speakers = (ev.speakers || []).map((s) => ({
+      name: s.name || "",
+      topic: s.topic || "",
+      takeaway: s.takeaway || "",
+    }));
     setForm({
       title: ev.title,
       date: ev.date,
@@ -106,14 +110,14 @@ export default function Events() {
     setHasSpeaker(yes);
     setForm((f) => ({
       ...f,
-      speakers: yes ? (f.speakers.length ? f.speakers : [{ name: "", topic: "" }]) : [],
+      speakers: yes ? (f.speakers.length ? f.speakers : [{ name: "", topic: "", takeaway: "" }]) : [],
     }));
   }
 
   function setSpeakerCount(n) {
     setForm((f) => {
       const speakers = [...f.speakers];
-      while (speakers.length < n) speakers.push({ name: "", topic: "" });
+      while (speakers.length < n) speakers.push({ name: "", topic: "", takeaway: "" });
       speakers.length = n;
       return { ...f, speakers };
     });
@@ -178,7 +182,7 @@ export default function Events() {
           {events.map((ev) => {
             const total = ev.present_count + ev.absent_count;
             const rate = total ? Math.round((ev.present_count / total) * 100) : 0;
-            const speakers = (ev.speakers || []).filter((s) => s.name || s.topic);
+            const speakers = (ev.speakers || []).filter((s) => s.name || s.topic || s.takeaway);
             return (
               <div key={ev.id} className="card flex flex-col">
                 <div className="flex items-start justify-between">
@@ -201,6 +205,11 @@ export default function Events() {
                       <div key={i}>
                         🗣️ {s.name}
                         {s.topic && <span className="text-slate-400"> — {s.topic}</span>}
+                        {s.takeaway && (
+                          <div className="pl-6 text-xs text-slate-400">
+                            💡 <span className="font-medium text-slate-500">Key takeaway:</span> {s.takeaway}
+                          </div>
+                        )}
                       </div>
                     ))}
                     {ev.activity && (
@@ -298,7 +307,7 @@ export default function Events() {
                 </select>
               </div>
               {form.speakers.map((s, i) => (
-                <div key={i} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div key={i} className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                   <div>
                     <label className="label">Speaker {i + 1}</label>
                     <input className="input" value={s.name} onChange={(e) => updateSpeaker(i, "name", e.target.value)} />
@@ -306,6 +315,10 @@ export default function Events() {
                   <div>
                     <label className="label">Topic</label>
                     <input className="input" value={s.topic} onChange={(e) => updateSpeaker(i, "topic", e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="label">Key Takeaway</label>
+                    <input className="input" value={s.takeaway} onChange={(e) => updateSpeaker(i, "takeaway", e.target.value)} />
                   </div>
                 </div>
               ))}
