@@ -52,6 +52,9 @@ Double-check that `render.yaml` is in the repo **root** and that `backend/.env` 
    - **MONGODB_URI** — your full Atlas string, e.g.
      `mongodb+srv://sevak_369:<password>@sabha.sidxfrt.mongodb.net/?retryWrites=true&w=majority`
    - **FIRST_ADMIN_PASSWORD** — the password for your first admin login
+   - **GOOGLE_CLIENT_ID** / **VITE_GOOGLE_CLIENT_ID** — your OAuth Web-app Client
+     ID (the **same** value in both). Skip these if you're not using Google
+     Sign-In; the app falls back to email + password login.
    - Leave **CORS_ORIGINS** and **VITE_API_BASE** empty for now → filled in step 5.
 
 The first build starts automatically.
@@ -89,6 +92,11 @@ VITE_API_BASE = https://sabha-attendance-api.onrender.com
 (Use your real backend URL, **no** trailing `/api` — the app already adds it.) **Save**,
 then **Manual Deploy → Deploy latest commit**. A static build must be **rebuilt** to
 bake the new value into the JavaScript.
+
+> **Using Google Sign-In?** In the [Google Cloud Console](https://console.cloud.google.com/)
+> add your production frontend URL (e.g. `https://sabha-attendance-web.onrender.com`)
+> to the OAuth client's **Authorized JavaScript origins**, then redeploy the frontend
+> so `VITE_GOOGLE_CLIENT_ID` is baked in.
 
 ## 6. Log in
 

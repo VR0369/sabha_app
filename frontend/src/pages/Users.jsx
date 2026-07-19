@@ -30,7 +30,10 @@ export default function Users() {
     setSaving(true);
     setError("");
     try {
-      await api.post("/api/auth/register", form);
+      // Omit an empty password so the backend creates a Google-only invite.
+      const payload = { ...form };
+      if (!payload.password) delete payload.password;
+      await api.post("/api/auth/register", payload);
       setModalOpen(false);
       setForm(EMPTY);
       load();
@@ -66,12 +69,13 @@ export default function Users() {
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Role</th>
+              <th className="px-4 py-3">Sign-in</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={3} className="px-4 py-8 text-center text-slate-400">
+                <td colSpan={4} className="px-4 py-8 text-center text-slate-400">
                   Loading…
                 </td>
               </tr>
@@ -88,6 +92,9 @@ export default function Users() {
                     >
                       {u.role}
                     </span>
+                  </td>
+                  <td className="px-4 py-3 text-slate-500">
+                    {u.has_password ? "Email + Google" : "Google"}
                   </td>
                 </tr>
               ))
@@ -108,7 +115,12 @@ export default function Users() {
             <button
               className="btn-primary"
               onClick={save}
-              disabled={saving || !form.name || !form.email || form.password.length < 6}
+              disabled={
+                saving ||
+                !form.name ||
+                !form.email ||
+                (form.password.length > 0 && form.password.length < 6)
+              }
             >
               {saving ? "Saving…" : "Create"}
             </button>
@@ -126,8 +138,18 @@ export default function Users() {
             <input className="input" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           </div>
           <div>
-            <label className="label">Password (min 6 chars)</label>
-            <input className="input" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+            <label className="label">Password (optional)</label>
+            <input
+              className="input"
+              type="password"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              placeholder="Leave blank for Google-only sign-in"
+            />
+            <p className="mt-1 text-xs text-slate-400">
+              Leave blank to invite a Google account (they sign in with Google). Set a password
+              (min 6 chars) to also allow email + password login.
+            </p>
           </div>
           <div>
             <label className="label">Role</label>

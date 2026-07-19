@@ -36,11 +36,16 @@ services:
         value: Administrator
       - key: FIRST_ADMIN_EMAIL
         value: admin@sabha.app
+      # Google account that is always allowed and granted the admin role:
+      - key: PRIMARY_ADMIN_EMAIL
+        value: vijayrathod1@gmail.com
       # Render generates a strong random secret automatically:
       - key: JWT_SECRET
         generateValue: true
       # --- Secrets you set in the dashboard (never committed) -------- #
       - key: MONGODB_URI            # your full Atlas connection string
+        sync: false
+      - key: GOOGLE_CLIENT_ID       # OAuth Web-app Client ID (same as frontend)
         sync: false
       - key: FIRST_ADMIN_PASSWORD   # first admin login password
         sync: false
@@ -69,4 +74,6 @@ services:
     envVars:
       # Set AFTER the backend URL exists, then redeploy (see DEPLOY.md):
       - key: VITE_API_BASE          # e.g. https://sabha-attendance-api.onrender.com
+        sync: false
+      - key: VITE_GOOGLE_CLIENT_ID  # OAuth Web-app Client ID (same as backend)
         sync: false

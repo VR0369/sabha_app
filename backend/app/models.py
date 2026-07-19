@@ -28,17 +28,25 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    password: str = Field(..., min_length=6, max_length=128)
+    # Optional: omit to invite a Google-only account (sign-in via Google,
+    # no password). Provide one to also enable email + password login.
+    password: str | None = Field(default=None, min_length=6, max_length=128)
 
 
 class UserPublic(UserBase):
     id: PyObjectId
     created_at: datetime
+    has_password: bool = False
 
 
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
+
+
+class GoogleLoginRequest(BaseModel):
+    # The ID token (JWT) returned by Google Identity Services on the client.
+    credential: str
 
 
 class Token(BaseModel):
@@ -146,3 +154,10 @@ def serialize(doc: dict[str, Any]) -> dict[str, Any]:
     if "_id" in out:
         out["id"] = out.pop("_id")
     return out
+
+
+def user_public(doc: dict[str, Any]) -> "UserPublic":
+    """Build a UserPublic from a raw user document (adds has_password)."""
+    data = serialize(doc)
+    data["has_password"] = bool(doc.get("hashed_password"))
+    return UserPublic(**data)

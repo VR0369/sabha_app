@@ -7,7 +7,7 @@ trends over time.
 - **Backend:** Python · FastAPI · Motor (async MongoDB)
 - **Frontend:** React (Vite) · Tailwind CSS · Recharts
 - **Database:** MongoDB Atlas
-- **Auth:** JWT, multi-role (admin + coordinator)
+- **Auth:** Google Sign-In + email/password (JWT), multi-role (admin + coordinator)
 
 ## Features
 
@@ -122,6 +122,31 @@ port 8000, so no extra config is needed in development.
 For a production build: `npm run build` (output in `frontend/dist/`). To point a
 built frontend at a remote API, set `VITE_API_BASE` in `frontend/.env`.
 
+## 4. Google Sign-In (optional but recommended)
+
+Users can sign in with their Google account. Access is **restricted to
+pre-approved emails**: an admin invites someone on the **Users** page (leaving
+the password blank), and that person can then sign in with Google. The primary
+admin (**vijayrathod1@gmail.com**) is always allowed and is granted the admin
+role automatically.
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/) →
+   **APIs & Services → Credentials**.
+2. **Create Credentials → OAuth client ID → Web application**.
+3. Under **Authorized JavaScript origins**, add every origin the app is served
+   from, e.g. `http://localhost:5173` (dev) and your production URL.
+4. Copy the generated **Client ID** (ends in `.apps.googleusercontent.com`) and
+   set it in **both** places — the value must match:
+   - `backend/.env` → `GOOGLE_CLIENT_ID=...` (also set `PRIMARY_ADMIN_EMAIL`)
+   - `frontend/.env` → `VITE_GOOGLE_CLIENT_ID=...`
+5. Restart the backend and the Vite dev server.
+
+If `VITE_GOOGLE_CLIENT_ID` is left empty, the Google button is hidden and the app
+falls back to email + password login only.
+
+> The email + password login still works as a fallback (e.g. the bootstrap admin
+> from `FIRST_ADMIN_EMAIL` / `FIRST_ADMIN_PASSWORD`).
+
 ## Deploy to the cloud (free)
 
 Ready to go live? See **[DEPLOY.md](DEPLOY.md)** for a step-by-step guide to
@@ -177,8 +202,9 @@ Sabha App/
 
 | Method | Path | Notes |
 |--------|------|-------|
-| POST | `/api/auth/login` | Returns JWT + user |
-| POST | `/api/auth/register` | Admin only — create staff |
+| POST | `/api/auth/login` | Email + password → JWT + user |
+| POST | `/api/auth/google` | Google ID token → JWT + user (pre-approved emails only) |
+| POST | `/api/auth/register` | Admin only — invite staff (password optional) |
 | GET | `/api/auth/me` | Current user |
 | GET/POST | `/api/attendees` | List (search/group/active) / create |
 | PUT/DELETE | `/api/attendees/{id}` | Update / delete (cascades history) |

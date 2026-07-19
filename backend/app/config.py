@@ -19,6 +19,12 @@ class Settings(BaseSettings):
     first_admin_email: str = "admin@sabha.app"
     first_admin_password: str = "ChangeMe123!"
 
+    # --- Google Sign-In ---
+    # OAuth 2.0 Web-application Client ID from Google Cloud Console.
+    google_client_id: str = ""
+    # This Google account is always allowed and is granted the admin role.
+    primary_admin_email: str = "vijayrathod1@gmail.com"
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

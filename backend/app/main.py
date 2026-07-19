@@ -27,10 +27,37 @@ async def _bootstrap_admin() -> None:
     print(f"[bootstrap] Created first admin: {settings.first_admin_email}")
 
 
+async def _ensure_primary_admin() -> None:
+    """Guarantee the configured Google primary admin can always sign in.
+
+    Pre-approves the account (so Google login is allowed) and keeps it in the
+    admin role, without setting a password (they sign in via Google).
+    """
+    email = settings.primary_admin_email.lower().strip()
+    if not email:
+        return
+    db = get_database()
+    existing = await db.users.find_one({"email": email})
+    if existing is None:
+        await db.users.insert_one(
+            {
+                "name": email.split("@")[0],
+                "email": email,
+                "role": "admin",
+                "created_at": datetime.now(timezone.utc),
+            }
+        )
+        print(f"[bootstrap] Pre-approved primary admin: {email}")
+    elif existing.get("role") != "admin":
+        await db.users.update_one({"_id": existing["_id"]}, {"$set": {"role": "admin"}})
+        print(f"[bootstrap] Promoted primary admin to admin: {email}")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await connect_to_mongo()
     await _bootstrap_admin()
+    await _ensure_primary_admin()
     yield
     await close_mongo_connection()
 
